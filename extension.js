@@ -31,8 +31,7 @@ export default class InspoExtension extends Extension {
         });
         this._label.connect('notify::hover', () => this._updateTooltip());
 
-        const clock = Main.panel.statusArea.dateMenu._clockDisplay;
-        clock.get_parent().insert_child_below(this._label, clock);
+        Main.panel._leftBox.add_child(this._label);
 
         this._settingsId = this._settings.connect('changed::rotation-minutes', () => this._armTimer());
 
