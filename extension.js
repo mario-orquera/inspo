@@ -24,7 +24,7 @@ export default class InspoExtension extends Extension {
             visible: false,
         });
         this._label.clutter_text.ellipsize = Pango.EllipsizeMode.END;
-        this._label.set_style('max-width: 400px;');
+        this._label.set_style('max-width: 560px;');
         this._label.connect('button-press-event', () => {
             this._rotate();
             return Clutter.EVENT_STOP;
