@@ -1,0 +1,7 @@
+{
+  "name": "Inspo",
+  "description": "Shows an inspirational message from a text file next to the clock.",
+  "uuid": "inspo@mario",
+  "shell-version": ["49"],
+  "settings-schema": "org.gnome.shell.extensions.inspo"
+}
