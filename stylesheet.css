@@ -2,3 +2,50 @@
     padding-right: 12px;
     opacity: 200;
 }
+
+.inspo-pomo-time {
+    padding-left: 4px;
+    font-feature-settings: "tnum";
+}
+
+.inspo-pomo-focus .inspo-pomo-time {
+    color: #f66151;
+}
+
+.inspo-pomo-break .inspo-pomo-time {
+    color: #57e389;
+}
+
+.inspo-pomo-paused .inspo-pomo-time {
+    opacity: 120;
+}
+
+.inspo-pomo-title {
+    font-weight: bold;
+    padding-top: 4px;
+}
+
+.inspo-pomo-readout {
+    font-size: 220%;
+    font-weight: bold;
+    font-feature-settings: "tnum";
+}
+
+.inspo-pomo-dots {
+    padding-bottom: 4px;
+    letter-spacing: 4px;
+}
+
+.inspo-pomo-controls {
+    spacing: 8px;
+}
+
+.inspo-pomo-button {
+    padding: 6px 12px;
+}
+
+.inspo-pomo-value {
+    min-width: 48px;
+    text-align: center;
+    font-feature-settings: "tnum";
+}
