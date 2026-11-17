@@ -7,7 +7,11 @@ import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 import {pickNext} from './messages.js';
+import {Phase, Pomodoro} from './pomodoro.js';
+import {PomodoroButton} from './pomodoroUi.js';
 import {MessageStore} from './store.js';
+
+const POMO_KEYS = ['focus-minutes', 'short-break-minutes', 'long-break-minutes', 'sessions-before-long'];
 
 export default class InspoExtension extends Extension {
     enable() {
@@ -39,6 +43,70 @@ export default class InspoExtension extends Extension {
         this._store = new MessageStore(path, () => this._rotate());
         this._store.load();
         this._rotate();
+
+        this._enablePomodoro();
+    }
+
+    _pomoConfig() {
+        return {
+            focus: this._settings.get_int('focus-minutes'),
+            short: this._settings.get_int('short-break-minutes'),
+            long: this._settings.get_int('long-break-minutes'),
+            every: this._settings.get_int('sessions-before-long'),
+        };
+    }
+
+    _enablePomodoro() {
+        this._pomoTickId = 0;
+        this._pomodoro = new Pomodoro(this._pomoConfig(), () => GLib.get_monotonic_time() / 1000);
+        this._pomoButton = new PomodoroButton(this._pomodoro, this._settings, {
+            onAction: () => this._syncPomoTick(),
+        });
+        Main.panel.addToStatusArea('inspo-pomodoro', this._pomoButton, 0, 'right');
+        this._pomoSettingsIds = POMO_KEYS.map(key =>
+            this._settings.connect(`changed::${key}`, () => {
+                this._pomodoro.setConfig(this._pomoConfig());
+                this._pomoButton.refresh();
+            }));
+    }
+
+    _syncPomoTick() {
+        if (this._pomodoro.running && !this._pomoTickId) {
+            this._pomoTickId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
+                const ended = this._pomodoro.tick();
+                if (ended)
+                    this._notifyPhaseEnd(ended);
+                this._pomoButton.refresh();
+                if (this._pomodoro.running)
+                    return GLib.SOURCE_CONTINUE;
+                this._pomoTickId = 0;
+                return GLib.SOURCE_REMOVE;
+            });
+        } else if (!this._pomodoro.running && this._pomoTickId) {
+            GLib.source_remove(this._pomoTickId);
+            this._pomoTickId = 0;
+        }
+    }
+
+    _notifyPhaseEnd(ended) {
+        if (ended === Phase.FOCUS) {
+            const next = this._pomodoro.phase;
+            const minutes = this._settings.get_int(next === Phase.LONG ? 'long-break-minutes' : 'short-break-minutes');
+            Main.notify('Focus done', `Take a ${minutes} minute break`);
+        } else {
+            Main.notify('Break over', 'Ready to focus?');
+        }
+    }
+
+    _disablePomodoro() {
+        if (this._pomoTickId)
+            GLib.source_remove(this._pomoTickId);
+        this._pomoTickId = 0;
+        this._pomoSettingsIds?.forEach(id => this._settings.disconnect(id));
+        this._pomoSettingsIds = null;
+        this._pomoButton?.destroy();
+        this._pomoButton = null;
+        this._pomodoro = null;
     }
 
     _rotate() {
@@ -76,6 +144,7 @@ export default class InspoExtension extends Extension {
     }
 
     disable() {
+        this._disablePomodoro();
         if (this._timerId)
             GLib.source_remove(this._timerId);
         this._timerId = 0;

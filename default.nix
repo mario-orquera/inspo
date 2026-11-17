@@ -13,7 +13,7 @@ stdenvNoCC.mkDerivation {
     runHook preInstall
     dir=$out/share/gnome-shell/extensions/inspo@mario
     mkdir -p $dir
-    cp metadata.json extension.js messages.js store.js stylesheet.css $dir/
+    cp metadata.json extension.js messages.js pomodoro.js pomodoroUi.js store.js stylesheet.css $dir/
     cp -r schemas $dir/schemas
     rm -f $dir/schemas/gschemas.compiled
     glib-compile-schemas $dir/schemas
