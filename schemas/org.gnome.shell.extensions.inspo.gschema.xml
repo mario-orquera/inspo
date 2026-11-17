@@ -6,5 +6,29 @@
       <default>10</default>
       <summary>Minutes between message changes</summary>
     </key>
+    <key name="focus-minutes" type="i">
+      <range min="1" max="180"/>
+      <default>25</default>
+      <summary>Pomodoro focus length in minutes</summary>
+    </key>
+    <key name="short-break-minutes" type="i">
+      <range min="1" max="60"/>
+      <default>5</default>
+      <summary>Pomodoro short break length in minutes</summary>
+    </key>
+    <key name="long-break-minutes" type="i">
+      <range min="1" max="120"/>
+      <default>15</default>
+      <summary>Pomodoro long break length in minutes</summary>
+    </key>
+    <key name="sessions-before-long" type="i">
+      <range min="1" max="12"/>
+      <default>4</default>
+      <summary>Focus sessions before a long break</summary>
+    </key>
+    <key name="task" type="s">
+      <default>''</default>
+      <summary>Current pomodoro task label</summary>
+    </key>
   </schema>
 </schemalist>
