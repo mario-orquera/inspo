@@ -14,6 +14,8 @@ top bar, controllable from a dropdown, configurable without a prefs window.
   (e.g. "Focus done — take 5"). The user presses start.
 - Actions: `start`, `pause`, `skip` (jump to next phase, paused), `reset` (back to
   idle, session count cleared).
+- Changing a length while a phase is running applies from the next phase; the running
+  countdown never jumps. While idle, the new value applies immediately.
 - The running timer is not persisted: it resets on shell restart/logout.
   Settings and task text persist via GSettings.
 - Time is computed from an end timestamp (monotonic clock), not by counting ticks,
@@ -30,7 +32,8 @@ top bar, controllable from a dropdown, configurable without a prefs window.
   - Dot row showing progress toward the long break.
   - Single-line entry for the current task (persisted).
   - Collapsible "Settings" submenu with +/- steppers for focus, short break,
-    long break, sessions-before-long-break.
+    long break, sessions-before-long-break, plus the existing message rotation
+    minutes (`rotation-minutes`), so all settings live in one place.
 - Phase end: `Main.notify()`.
 
 ## Architecture
